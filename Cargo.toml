@@ -1,11 +1,11 @@
 [package]
-name = "hyprland-parser"
+name = "hyprparser"
 version = "0.1.0"
 authors = ["Nyx <nnyyxxxx@protonmail.com>"]
 license = "GPL-2.0"
 description = "A parser for Hyprland's configuration file."
 repository = "https://github.com/nnyyxxxx/hyprparser.git"
-readme = "readme.md"
+readme = "README.md"
 keywords = [
     "parser",
     "hyprland",
@@ -15,5 +15,12 @@ keywords = [
 categories = ["parser"]
 edition = "2021"
 
+[lib]
+name = "hyprparser"
+path = "src/lib.rs"
+
+[[bin]]
+name = "hyprparser"
+path = "src/main.rs"
+
 [dependencies]
-hyprland-parser = { path = "hyprland-parser" }

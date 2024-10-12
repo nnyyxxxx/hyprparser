@@ -98,6 +98,48 @@ impl HyprlandConfig {
             }
         }
     }
+
+    pub fn parse_color(&self, color_str: &str) -> Option<(f32, f32, f32, f32)> {
+        if color_str.starts_with("rgba(") {
+            let rgba = color_str.trim_start_matches("rgba(").trim_end_matches(')');
+            let rgba = u32::from_str_radix(rgba, 16).ok()?;
+            Some((
+                ((rgba >> 24) & 0xFF) as f32 / 255.0,
+                ((rgba >> 16) & 0xFF) as f32 / 255.0,
+                ((rgba >> 8) & 0xFF) as f32 / 255.0,
+                (rgba & 0xFF) as f32 / 255.0,
+            ))
+        } else if color_str.starts_with("rgb(") {
+            let rgb = color_str.trim_start_matches("rgb(").trim_end_matches(')');
+            let rgb = u32::from_str_radix(rgb, 16).ok()?;
+            Some((
+                ((rgb >> 16) & 0xFF) as f32 / 255.0,
+                ((rgb >> 8) & 0xFF) as f32 / 255.0,
+                (rgb & 0xFF) as f32 / 255.0,
+                1.0,
+            ))
+        } else if color_str.starts_with("0x") {
+            let argb = u32::from_str_radix(&color_str[2..], 16).ok()?;
+            Some((
+                ((argb >> 16) & 0xFF) as f32 / 255.0,
+                ((argb >> 8) & 0xFF) as f32 / 255.0,
+                (argb & 0xFF) as f32 / 255.0,
+                ((argb >> 24) & 0xFF) as f32 / 255.0,
+            ))
+        } else {
+            None
+        }
+    }
+
+    pub fn format_color(&self, red: f32, green: f32, blue: f32, alpha: f32) -> String {
+        format!(
+            "rgba({:02x}{:02x}{:02x}{:02x})",
+            (red * 255.0) as u8,
+            (green * 255.0) as u8,
+            (blue * 255.0) as u8,
+            (alpha * 255.0) as u8
+        )
+    }
 }
 
 pub fn parse_config(config_str: &str) -> HyprlandConfig {
