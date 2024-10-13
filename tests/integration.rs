@@ -44,8 +44,8 @@ fn color_parsing() {
 
     let expected = Some((0.11764706, 0.27450982, 0.19607843, 1.0));
 
-    let rgba_parsed = config.parse_color("rgba(30, 70, 50, 1.0)");
-    let rgb_parsed = config.parse_color("rgb(30, 70, 50)");
+    let rgba_parsed = config.parse_color("rgba(1E4632FF)");
+    let rgb_parsed = config.parse_color("rgb(1E4632)");
     let argb_parsed = config.parse_color("0xFF1E4632");
 
     assert_eq!(expected, rgba_parsed);
