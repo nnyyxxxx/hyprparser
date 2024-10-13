@@ -75,9 +75,13 @@ impl HyprlandConfig {
     }
 
     pub fn add_entry_headless(&mut self, key: &str, value: &str) {
-        let entry = format!("{} = {}", key, value);
-        if !self.content.iter().any(|line| line.trim() == entry.trim()) {
-            self.content.push(entry);
+        if key.is_empty() && value.is_empty() {
+            self.content.push(String::new());
+        } else {
+            let entry = format!("{} = {}", key, value);
+            if !self.content.iter().any(|line| line.trim() == entry.trim()) {
+                self.content.push(entry);
+            }
         }
     }
 
