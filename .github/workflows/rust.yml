@@ -3,7 +3,7 @@ on:
   push:
     branches: ["main"]
     paths:
-      - '**.*.rs'
+      - '**/*.rs'
       - 'src/**'
       - 'Cargo.toml'
       - 'Cargo.lock'
@@ -22,10 +22,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-    - name: Install Rust
+      - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-    - name: Build
+      - name: Build
         run: |
           cargo build --verbose
           cargo build --release --verbose
