@@ -124,7 +124,9 @@ impl HyprlandConfig {
                 ((argb >> 24) & 0xFF) as f32 / 255.0,
             ))
         } else {
-            panic!("Invalid color value");
+            #[cfg(debug_assertions)]
+            println!("Invalid color value: {}", color_str);
+            None
         }
     }
 
