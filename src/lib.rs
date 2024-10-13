@@ -76,6 +76,10 @@ impl HyprlandConfig {
         }
     }
 
+    pub fn add_empty_line(&mut self) {
+        self.content.push(String::new());
+    }
+
     fn update_sections(&mut self, pos: usize, offset: usize) {
         for (start, end) in self.sections.values_mut() {
             if *start >= pos {
