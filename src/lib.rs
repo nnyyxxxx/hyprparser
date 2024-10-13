@@ -183,3 +183,9 @@ impl fmt::Display for HyprlandConfig {
         Ok(())
     }
 }
+
+impl PartialEq for HyprlandConfig {
+    fn eq(&self, other: &Self) -> bool {
+        self.content == other.content
+    }
+}
