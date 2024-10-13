@@ -99,20 +99,20 @@ impl HyprlandConfig {
     pub fn parse_color(&self, color_str: &str) -> Option<(f32, f32, f32, f32)> {
         if color_str.starts_with("rgba(") {
             let rgba = color_str.trim_start_matches("rgba(").trim_end_matches(')');
-            let rgba = u32::from_str_radix(rgba, 16).ok()?;
+            let rgba: Vec<&str> = rgba.split(',').map(|s| s.trim()).collect();
             Some((
-                ((rgba >> 24) & 0xFF) as f32 / 255.0,
-                ((rgba >> 16) & 0xFF) as f32 / 255.0,
-                ((rgba >> 8) & 0xFF) as f32 / 255.0,
-                (rgba & 0xFF) as f32 / 255.0,
+                rgba[0].parse::<f32>().unwrap() / 255.0,
+                rgba[1].parse::<f32>().unwrap() / 255.0,
+                rgba[2].parse::<f32>().unwrap() / 255.0,
+                rgba[3].parse::<f32>().unwrap(),
             ))
         } else if color_str.starts_with("rgb(") {
             let rgb = color_str.trim_start_matches("rgb(").trim_end_matches(')');
-            let rgb = u32::from_str_radix(rgb, 16).ok()?;
+            let rgb: Vec<&str> = rgb.split(',').map(|s| s.trim()).collect();
             Some((
-                ((rgb >> 16) & 0xFF) as f32 / 255.0,
-                ((rgb >> 8) & 0xFF) as f32 / 255.0,
-                (rgb & 0xFF) as f32 / 255.0,
+                rgb[0].parse::<f32>().unwrap() / 255.0,
+                rgb[1].parse::<f32>().unwrap() / 255.0,
+                rgb[2].parse::<f32>().unwrap() / 255.0,
                 1.0,
             ))
         } else if let Some(stripped) = color_str.strip_prefix("0x") {
@@ -124,7 +124,7 @@ impl HyprlandConfig {
                 ((argb >> 24) & 0xFF) as f32 / 255.0,
             ))
         } else {
-            None
+            panic!("Invalid color value");
         }
     }
 
