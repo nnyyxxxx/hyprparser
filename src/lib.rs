@@ -74,6 +74,13 @@ impl HyprlandConfig {
         }
     }
 
+    pub fn add_entry_headless(&mut self, key: &str, value: &str) {
+        let entry = format!("{} = {}", key, value);
+        if !self.content.iter().any(|line| line.trim() == entry.trim()) {
+            self.content.push(entry);
+        }
+    }
+
     fn update_sections(&mut self, pos: usize, offset: usize) {
         for (start, end) in self.sections.values_mut() {
             if *start >= pos {
