@@ -18,7 +18,6 @@ fn main() {
     parsed_config.add_entry("decoration", "rounding = 10");
     parsed_config.add_entry("decoration.blur", "enabled = true");
     parsed_config.add_entry("decoration.blur", "size = 10");
-    parsed_config.add_empty_line();
 
     let updated_config_str = parsed_config.to_string();
 

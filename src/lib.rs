@@ -76,10 +76,6 @@ impl HyprlandConfig {
         }
     }
 
-    pub fn add_empty_line(&mut self) {
-        self.content.push(String::new());
-    }
-
     fn update_sections(&mut self, pos: usize, offset: usize) {
         for (start, end) in self.sections.values_mut() {
             if *start >= pos {
@@ -136,15 +132,27 @@ impl HyprlandConfig {
     fn create_category(&mut self, category: &str, depth: usize, insert_pos: &mut usize) {
         let part = category.split('.').last().unwrap();
         let new_section = format!("{}{} {{", "    ".repeat(depth), part);
+
+        let mut lines_added = 0;
+        if *insert_pos > 0 && !self.content[*insert_pos - 1].trim().is_empty() {
+            self.content.insert(*insert_pos, String::new());
+            *insert_pos += 1;
+            lines_added += 1;
+        }
+
         self.content.insert(*insert_pos, new_section);
         *insert_pos += 1;
         self.content
             .insert(*insert_pos, format!("{}}}", "    ".repeat(depth)));
-
-        self.update_sections(*insert_pos - 1, 2);
-        self.sections
-            .insert(category.to_string(), (*insert_pos - 1, *insert_pos));
         *insert_pos += 1;
+        self.content.insert(*insert_pos, String::new());
+        *insert_pos += 1;
+
+        self.update_sections(*insert_pos - 3 - lines_added, 3 + lines_added);
+        self.sections.insert(
+            category.to_string(),
+            (*insert_pos - 3 - lines_added, *insert_pos - 2),
+        );
     }
 }
 
