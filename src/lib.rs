@@ -58,12 +58,16 @@ impl HyprlandConfig {
                     .position(|line| line.trim().starts_with(key))
                     .map(|pos| start + pos);
 
-                if let Some(line_num) = existing_line {
-                    self.content[line_num] = format!("{}{}", "    ".repeat(depth + 1), entry);
-                } else {
-                    self.content
-                        .insert(end, format!("{}{}", "    ".repeat(depth + 1), entry));
-                    self.update_sections(end, 1);
+                let formatted_entry = format!("{}{}", "    ".repeat(depth + 1), entry);
+
+                match existing_line {
+                    Some(line_num) => {
+                        self.content[line_num] = formatted_entry;
+                    }
+                    None => {
+                        self.content.insert(end, formatted_entry);
+                        self.update_sections(end, 1);
+                    }
                 }
                 return;
             }
