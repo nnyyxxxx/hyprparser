@@ -48,40 +48,28 @@ impl HyprlandConfig {
             }
             current_section.push_str(part);
 
-            if let Some(&(start, end)) = self.sections.get(&current_section) {
-                insert_pos = end;
-                if i == parts.len() - 1 {
-                    let key = entry.split('=').next().unwrap().trim();
-                    let existing_line = self.content[start..=end]
-                        .iter()
-                        .position(|line| line.trim().starts_with(key))
-                        .map(|pos| start + pos);
+            if !self.sections.contains_key(&current_section) {
+                self.create_category(&current_section, depth, &mut insert_pos);
+            }
 
-                    if let Some(line_num) = existing_line {
-                        self.content[line_num] = format!("{}{}", "    ".repeat(depth + 1), entry);
-                    } else {
-                        self.content
-                            .insert(end, format!("{}{}", "    ".repeat(depth + 1), entry));
-                        self.update_sections(end, 1);
-                    }
-                    return;
-                }
-            } else {
-                let new_section = format!("{}{} {{", "    ".repeat(depth), part);
-                self.content.insert(insert_pos, new_section);
-                insert_pos += 1;
-                if i == parts.len() - 1 {
+            let &(start, end) = self.sections.get(&current_section).unwrap();
+            insert_pos = end;
+
+            if i == parts.len() - 1 {
+                let key = entry.split('=').next().unwrap().trim();
+                let existing_line = self.content[start..=end]
+                    .iter()
+                    .position(|line| line.trim().starts_with(key))
+                    .map(|pos| start + pos);
+
+                if let Some(line_num) = existing_line {
+                    self.content[line_num] = format!("{}{}", "    ".repeat(depth + 1), entry);
+                } else {
                     self.content
-                        .insert(insert_pos, format!("{}{}", "    ".repeat(depth + 1), entry));
-                    insert_pos += 1;
+                        .insert(end, format!("{}{}", "    ".repeat(depth + 1), entry));
+                    self.update_sections(end, 1);
                 }
-                self.content
-                    .insert(insert_pos, format!("{}}}", "    ".repeat(depth)));
-
-                self.update_sections(insert_pos - 2, 3);
-                self.sections
-                    .insert(current_section.clone(), (insert_pos - 2, insert_pos));
-                insert_pos += 1;
+                return;
             }
 
             depth += 1;
@@ -139,6 +127,20 @@ impl HyprlandConfig {
             (blue * 255.0) as u8,
             (alpha * 255.0) as u8
         )
+    }
+
+    fn create_category(&mut self, category: &str, depth: usize, insert_pos: &mut usize) {
+        let part = category.split('.').last().unwrap();
+        let new_section = format!("{}{} {{", "    ".repeat(depth), part);
+        self.content.insert(*insert_pos, new_section);
+        *insert_pos += 1;
+        self.content
+            .insert(*insert_pos, format!("{}}}", "    ".repeat(depth)));
+
+        self.update_sections(*insert_pos - 1, 2);
+        self.sections
+            .insert(category.to_string(), (*insert_pos - 1, *insert_pos));
+        *insert_pos += 1;
     }
 }
 
