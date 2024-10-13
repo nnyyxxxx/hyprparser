@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt;
 
 #[derive(Debug, Default)]
 pub struct HyprlandConfig {
@@ -32,17 +33,12 @@ impl HyprlandConfig {
         }
     }
 
-    pub fn to_string(&self) -> String {
-        self.content.join("\n")
-    }
-
     pub fn add_entry(&mut self, category: &str, entry: &str) {
         let parts: Vec<&str> = category.split('.').collect();
         let mut current_section = String::new();
-        let mut depth = 0;
         let mut insert_pos = self.content.len();
 
-        for (i, part) in parts.iter().enumerate() {
+        for (depth, (i, part)) in parts.iter().enumerate().enumerate() {
             if i > 0 {
                 current_section.push('.');
             }
@@ -62,17 +58,19 @@ impl HyprlandConfig {
                     .position(|line| line.trim().starts_with(key))
                     .map(|pos| start + pos);
 
-                if let Some(line_num) = existing_line {
-                    self.content[line_num] = format!("{}{}", "    ".repeat(depth + 1), entry);
-                } else {
-                    self.content
-                        .insert(end, format!("{}{}", "    ".repeat(depth + 1), entry));
-                    self.update_sections(end, 1);
+                let formatted_entry = format!("{}{}", "    ".repeat(depth + 1), entry);
+
+                match existing_line {
+                    Some(line_num) => {
+                        self.content[line_num] = formatted_entry;
+                    }
+                    None => {
+                        self.content.insert(end, formatted_entry);
+                        self.update_sections(end, 1);
+                    }
                 }
                 return;
             }
-
-            depth += 1;
         }
     }
 
@@ -106,8 +104,8 @@ impl HyprlandConfig {
                 (rgb & 0xFF) as f32 / 255.0,
                 1.0,
             ))
-        } else if color_str.starts_with("0x") {
-            let argb = u32::from_str_radix(&color_str[2..], 16).ok()?;
+        } else if let Some(stripped) = color_str.strip_prefix("0x") {
+            let argb = u32::from_str_radix(stripped, 16).ok()?;
             Some((
                 ((argb >> 16) & 0xFF) as f32 / 255.0,
                 ((argb >> 8) & 0xFF) as f32 / 255.0,
@@ -160,4 +158,17 @@ pub fn parse_config(config_str: &str) -> HyprlandConfig {
     let mut config = HyprlandConfig::new();
     config.parse(config_str);
     config
+}
+
+impl fmt::Display for HyprlandConfig {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for (i, line) in self.content.iter().enumerate() {
+            if i == self.content.len() - 1 {
+                write!(f, "{}", line)?;
+            } else {
+                writeln!(f, "{}", line)?;
+            }
+        }
+        Ok(())
+    }
 }
