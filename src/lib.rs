@@ -77,7 +77,7 @@ impl HyprlandConfig {
     }
 
     pub fn add_empty_line(&mut self) {
-        self.content.append(&mut vec!["".to_string()]);
+        self.content.push(String::new());
     }
 
     fn update_sections(&mut self, pos: usize, offset: usize) {
