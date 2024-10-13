@@ -3,6 +3,8 @@
 ## HyprParser
 A parser for Hyprland's configuration files written in Rust 🚀🦀
 
+[Hyprland Configuration Documentation](https://wiki.hyprland.org/Configuring/Configuring-Hyprland)
+
 </div>
 
 ## Usage example
