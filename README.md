@@ -9,7 +9,7 @@ A parser for Hyprland's configuration files written in Rust 🚀🦀
 
 ## Usage example
 ```rust
-use hyprparser;
+use hyprparser::{parse_config, HyprlandConfig};
 use std::{env, fs, path::Path};
 
 fn main() {
