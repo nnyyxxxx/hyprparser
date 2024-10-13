@@ -162,8 +162,12 @@ pub fn parse_config(config_str: &str) -> HyprlandConfig {
 
 impl fmt::Display for HyprlandConfig {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for line in &self.content {
-            writeln!(f, "{}", line)?;
+        for (i, line) in self.content.iter().enumerate() {
+            if i == self.content.len() - 1 {
+                write!(f, "{}", line)?;
+            } else {
+                writeln!(f, "{}", line)?;
+            }
         }
         Ok(())
     }
