@@ -1,11 +1,9 @@
 ## hyprparser
-
 A parser for hyprland written in rust 🚀🦀
 
 ---
 
 ### Examples
-
 ```rust
 fn main() {
     let home = std::env::var("HOME").unwrap();
@@ -27,8 +25,10 @@ fn main() {
 }
 ```
 
-### Credits
+### TODO
+- Color formatting tests
 
+### Credits
 - [Nyx](https://github.com/nnyyxxxx) - For making the parser
 - [Vaxry](https://github.com/vaxerski) - For Hyprland
 - [Hyprland](https://github.com/hyprwm/Hyprland) - The window manager

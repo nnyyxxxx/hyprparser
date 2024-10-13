@@ -6,7 +6,6 @@ const TEST_CONFIG_FILENAME: &str = "tests/test_config.conf";
 
 #[test]
 fn config_parsing() {
-    // this will fail if parse_config fails
     let _ = parse_config(&fs::read_to_string(TEST_CONFIG_FILENAME).unwrap());
 }
 
@@ -52,5 +51,3 @@ fn color_parsing() {
     assert_eq!(expected, rgb_parsed);
     assert_eq!(expected, argb_parsed);
 }
-
-// TODO: color_formatting
